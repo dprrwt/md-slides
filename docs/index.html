@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>md-slides Demo</title>
+  <meta name="author" content="Deepankar Rawat">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/styles/github-dark.min.css">
+  <style>
+    
+      :root {
+        --bg: #0a0a0f;
+        --bg-slide: #12121a;
+        --fg: #e8e8f0;
+        --fg-dim: #8888aa;
+        --accent: #6c63ff;
+        --accent-glow: rgba(108, 99, 255, 0.3);
+        --code-bg: #1a1a2e;
+        --code-border: #2a2a4a;
+        --blockquote-border: #6c63ff;
+        --link: #8b83ff;
+        --font-heading: 'Inter', system-ui, sans-serif;
+        --font-body: 'Inter', system-ui, sans-serif;
+        --font-code: 'JetBrains Mono', 'Fira Code', monospace;
+        --radius: 12px;
+      }
+    
+    
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Slide Container */
+  .deck {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  .slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 8vh 10vw;
+    background: var(--bg-slide);
+    opacity: 0;
+    transform: translateX(40px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    pointer-events: none;
+    overflow-y: auto;
+  }
+
+  .slide.active {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+    z-index: 1;
+  }
+
+  .slide.prev {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+
+  /* Layouts */
+  .slide.layout-center {
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .slide.layout-title {
+    justify-content: center;
+  }
+
+  .slide.layout-title h1 {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    margin-bottom: 1rem;
+  }
+
+  .slide.layout-quote {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 10vh 15vw;
+  }
+
+  .slide.layout-code {
+    justify-content: center;
+  }
+
+  .slide.layout-image {
+    align-items: center;
+    justify-content: center;
+  }
+
+  .slide.layout-image img {
+    max-width: 80%;
+    max-height: 70vh;
+    border-radius: var(--radius);
+  }
+
+  /* Typography */
+  h1 {
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 0.8em;
+    background: linear-gradient(135deg, var(--fg), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  h2 {
+    font-family: var(--font-heading);
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin-bottom: 0.6em;
+    color: var(--accent);
+  }
+
+  h3 {
+    font-family: var(--font-heading);
+    font-size: clamp(1.2rem, 2vw, 1.8rem);
+    font-weight: 600;
+    margin-bottom: 0.5em;
+    color: var(--fg);
+  }
+
+  p {
+    font-size: clamp(1rem, 1.8vw, 1.4rem);
+    line-height: 1.7;
+    margin-bottom: 0.8em;
+    color: var(--fg-dim);
+  }
+
+  strong {
+    color: var(--fg);
+    font-weight: 600;
+  }
+
+  em {
+    color: var(--accent);
+    font-style: italic;
+  }
+
+  a {
+    color: var(--link);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s;
+  }
+
+  a:hover {
+    border-bottom-color: var(--link);
+  }
+
+  /* Lists */
+  ul, ol {
+    font-size: clamp(1rem, 1.6vw, 1.3rem);
+    line-height: 1.8;
+    padding-left: 1.5em;
+    margin-bottom: 1em;
+    color: var(--fg-dim);
+  }
+
+  li {
+    margin-bottom: 0.4em;
+  }
+
+  li::marker {
+    color: var(--accent);
+  }
+
+  /* Code */
+  code {
+    font-family: var(--font-code);
+    font-size: 0.85em;
+    background: var(--code-bg);
+    border: 1px solid var(--code-border);
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    color: var(--accent);
+  }
+
+  pre {
+    margin: 1em 0;
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--code-border);
+  }
+
+  pre code {
+    display: block;
+    padding: 1.5em 2em;
+    background: var(--code-bg);
+    border: none;
+    font-size: clamp(0.8rem, 1.2vw, 1rem);
+    line-height: 1.6;
+    overflow-x: auto;
+    color: var(--fg);
+  }
+
+  /* Blockquotes */
+  blockquote {
+    border-left: 4px solid var(--blockquote-border);
+    padding: 1em 1.5em;
+    margin: 1em 0;
+    background: var(--accent-glow);
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+
+  blockquote p {
+    font-size: clamp(1.2rem, 2vw, 1.8rem);
+    font-style: italic;
+    color: var(--fg);
+    margin-bottom: 0;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1em 0;
+    font-size: clamp(0.85rem, 1.3vw, 1.1rem);
+  }
+
+  th, td {
+    padding: 0.75em 1em;
+    text-align: left;
+    border-bottom: 1px solid var(--code-border);
+  }
+
+  th {
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  td {
+    color: var(--fg-dim);
+  }
+
+  /* Images */
+  img {
+    max-width: 100%;
+    border-radius: var(--radius);
+  }
+
+  /* Progress bar */
+  .progress {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background: var(--accent);
+    transition: width 0.4s ease;
+    z-index: 100;
+    box-shadow: 0 0 10px var(--accent-glow);
+  }
+
+  /* Slide number */
+  .slide-number {
+    position: fixed;
+    bottom: 16px;
+    right: 24px;
+    font-family: var(--font-code);
+    font-size: 0.8rem;
+    color: var(--fg-dim);
+    opacity: 0.5;
+    z-index: 100;
+  }
+
+  /* Presenter notes toggle */
+  .notes-overlay {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0,0,0,0.9);
+    color: #ccc;
+    padding: 1.5em 2em;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    z-index: 200;
+    max-height: 30vh;
+    overflow-y: auto;
+    border-top: 2px solid var(--accent);
+  }
+
+  .notes-overlay.visible {
+    display: block;
+  }
+
+  /* Keyboard hint */
+  .hint {
+    position: fixed;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-code);
+    font-size: 0.75rem;
+    color: var(--fg-dim);
+    opacity: 0;
+    transition: opacity 0.5s;
+    z-index: 100;
+  }
+
+  .hint.visible {
+    opacity: 0.4;
+  }
+
+  /* Print / PDF */
+  @media print {
+    .slide {
+      position: relative;
+      opacity: 1;
+      transform: none;
+      page-break-after: always;
+      min-height: 100vh;
+    }
+    .progress, .slide-number, .hint, .notes-overlay {
+      display: none;
+    }
+  }
+
+  /* Animations */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .slide.active h1,
+  .slide.active h2,
+  .slide.active h3 {
+    animation: fadeInUp 0.6s ease forwards;
+  }
+
+  .slide.active p,
+  .slide.active ul,
+  .slide.active ol,
+  .slide.active pre,
+  .slide.active blockquote,
+  .slide.active table {
+    animation: fadeInUp 0.6s ease 0.15s forwards;
+    opacity: 0;
+  }
+
+  </style>
+</head>
+<body>
+  <div class="deck">
+    <section class="slide layout-title active">
+      <div class="slide-content">
+        <h1>md-slides ✨</h1>
+<p>Markdown → Beautiful Slides</p>
+<p><em>Zero config. Developer-friendly.</em></p>
+
+      </div>
+    </section>
+    <section class="slide layout-default" data-notes="This tool exists because making slides should be as easy as writing markdown.">
+      <div class="slide-content">
+        <h2>Why md-slides?</h2>
+<ul>
+<li><strong>Write in Markdown</strong> — your editor, your flow</li>
+<li><strong>4 themes</strong> — Dark, Light, Minimal, Neon</li>
+<li><strong>Live reload</strong> — see changes instantly</li>
+<li><strong>Single HTML output</strong> — deploy anywhere</li>
+<li><strong>Speaker notes</strong> — press <code>S</code> to toggle</li>
+</ul>
+
+      </div>
+    </section>
+    <section class="slide layout-code">
+      <div class="slide-content">
+        <h2>Getting Started</h2>
+<pre><code class="language-bash"># Install globally
+npm install -g @dprrwt/slides
+
+# Create a new presentation
+slides init my-talk
+
+# Start editing and previewing
+cd my-talk
+slides preview
+</code></pre>
+
+      </div>
+    </section>
+    <section class="slide layout-code">
+      <div class="slide-content">
+        <h2>Slide Syntax</h2>
+<p>Separate slides with <code>---</code> on its own line:</p>
+<pre><code class="language-markdown"># Title Slide
+
+Content here.
+
+---
+
+## Next Slide
+
+More content.
+
+---
+
+&gt; A quote slide.
+</code></pre>
+
+      </div>
+    </section>
+    <section class="slide layout-code">
+      <div class="slide-content">
+        <h2>Code Highlighting</h2>
+<p>190+ languages supported out of the box:</p>
+<pre><code class="language-typescript">interface Slide {
+  html: string;
+  notes: string;
+  layout: &#39;title&#39; | &#39;center&#39; | &#39;code&#39; | &#39;quote&#39;;
+}
+
+function present(slides: Slide[]): void {
+  slides.forEach((slide, i) =&gt; {
+    render(slide, { index: i, total: slides.length });
+  });
+}
+</code></pre>
+
+      </div>
+    </section>
+    <section class="slide layout-default">
+      <div class="slide-content">
+        <h2>Smart Layouts</h2>
+<p>Slides auto-detect their layout:</p>
+<table>
+<thead>
+<tr>
+<th>Content</th>
+<th>Layout</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Just a heading</td>
+<td><strong>Center</strong></td>
+</tr>
+<tr>
+<td>H1 with content</td>
+<td><strong>Title</strong></td>
+</tr>
+<tr>
+<td>Blockquote</td>
+<td><strong>Quote</strong></td>
+</tr>
+<tr>
+<td>Code block</td>
+<td><strong>Code</strong></td>
+</tr>
+<tr>
+<td>Everything else</td>
+<td><strong>Default</strong></td>
+</tr>
+</tbody></table>
+
+      </div>
+    </section>
+    <section class="slide layout-quote" data-notes="This is a quote slide — detected automatically from the blockquote.">
+      <div class="slide-content">
+        <blockquote>
+<p>&quot;The best presentations are written, not designed.&quot;</p>
+</blockquote>
+
+      </div>
+    </section>
+    <section class="slide layout-code">
+      <div class="slide-content">
+        <h2>Themes</h2>
+<p>Set via frontmatter or CLI:</p>
+<pre><code class="language-yaml">---
+theme: neon
+---
+</code></pre>
+<pre><code class="language-bash">slides build --theme light
+slides preview --theme minimal
+</code></pre>
+<p><strong>Built-in:</strong> <code>dark</code> · <code>light</code> · <code>minimal</code> · <code>neon</code></p>
+
+      </div>
+    </section>
+    <section class="slide layout-code" data-notes="Only you can see this. Press S.">
+      <div class="slide-content">
+        <h2>Speaker Notes</h2>
+<p>Add notes with HTML comments:</p>
+<pre><code class="language-markdown">## My Slide
+
+Content visible to audience.
+
+</code></pre>
+<p>Press <strong>S</strong> now to see the notes panel →</p>
+<!-- notes: 👋 You found the notes! These are only visible to the presenter. Use them for talking points, reminders, or timing cues. -->
+      </div>
+    </section>
+    <section class="slide layout-default">
+      <div class="slide-content">
+        <h2>Navigation</h2>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>→</code> <code>↓</code> <code>Space</code></td>
+<td>Next slide</td>
+</tr>
+<tr>
+<td><code>←</code> <code>↑</code></td>
+<td>Previous slide</td>
+</tr>
+<tr>
+<td><code>S</code></td>
+<td>Speaker notes</td>
+</tr>
+<tr>
+<td><code>F</code></td>
+<td>Fullscreen</td>
+</tr>
+<tr>
+<td><code>Home</code> / <code>End</code></td>
+<td>First / Last</td>
+</tr>
+</tbody></table>
+<p><strong>Touch:</strong> Swipe left/right</p>
+<p><strong>Click:</strong> Right half → next, Left half → prev</p>
+
+      </div>
+    </section>
+    <section class="slide layout-code">
+      <div class="slide-content">
+        <h2>Deploy Anywhere</h2>
+<p>Output is a <strong>single <code>index.html</code></strong> file:</p>
+<pre><code class="language-bash"># Build
+slides build
+
+# Deploy to GitHub Pages
+cd dist
+git init &amp;&amp; git add . &amp;&amp; git commit -m &quot;slides&quot;
+git push origin gh-pages
+</code></pre>
+<p>Or just email the HTML file. It&#39;s self-contained.</p>
+
+      </div>
+    </section>
+    <section class="slide layout-title">
+      <div class="slide-content">
+        <h1>Ship It 🚀</h1>
+<pre><code class="language-bash">npm install -g @dprrwt/slides
+</code></pre>
+<p><strong>GitHub:</strong> <a href="https://github.com/dprrwt/md-slides">dprrwt/md-slides</a></p>
+<p><strong>Author:</strong> <a href="https://dprrwt.me">dprrwt.me</a></p>
+
+      </div>
+    </section>
+  </div>
+
+  <div class="progress" style="width: 0%"></div>
+  <div class="slide-number">1 / 12</div>
+  <div class="notes-overlay"></div>
+  <div class="hint">← → navigate · S notes · F fullscreen</div>
+
+  <script>
+    
+    (function() {
+      let current = 0;
+      const total = 12;
+      const slides = document.querySelectorAll('.slide');
+      const progress = document.querySelector('.progress');
+      const slideNum = document.querySelector('.slide-number');
+      const notesOverlay = document.querySelector('.notes-overlay');
+      const hint = document.querySelector('.hint');
+      let notesVisible = false;
+
+      // Parse hash
+      const hash = parseInt(window.location.hash.replace('#', ''), 10);
+      if (!isNaN(hash) && hash >= 0 && hash < total) {
+        current = hash;
+      }
+
+      function goTo(n) {
+        if (n < 0 || n >= total) return;
+        slides[current].classList.remove('active');
+        slides[current].classList.add(n > current ? 'prev' : '');
+        current = n;
+        slides[current].classList.remove('prev');
+        slides[current].classList.add('active');
+        
+        progress.style.width = ((current + 1) / total * 100) + '%';
+        slideNum.textContent = (current + 1) + ' / ' + total;
+        window.location.hash = current;
+
+        // Update notes
+        const noteText = slides[current].dataset.notes || '';
+        notesOverlay.textContent = noteText || '(no notes for this slide)';
+      }
+
+      function next() { goTo(current + 1); }
+      function prev() { goTo(current - 1); }
+      function first() { goTo(0); }
+      function last() { goTo(total - 1); }
+
+      // Keyboard
+      document.addEventListener('keydown', function(e) {
+        hint.classList.remove('visible');
+        switch(e.key) {
+          case 'ArrowRight':
+          case 'ArrowDown':
+          case ' ':
+          case 'l':
+          case 'j':
+            e.preventDefault();
+            next();
+            break;
+          case 'ArrowLeft':
+          case 'ArrowUp':
+          case 'h':
+          case 'k':
+            e.preventDefault();
+            prev();
+            break;
+          case 'Home':
+            e.preventDefault();
+            first();
+            break;
+          case 'End':
+            e.preventDefault();
+            last();
+            break;
+          case 's':
+          case 'n':
+            notesVisible = !notesVisible;
+            notesOverlay.classList.toggle('visible', notesVisible);
+            break;
+          case 'f':
+            if (document.fullscreenElement) {
+              document.exitFullscreen();
+            } else {
+              document.documentElement.requestFullscreen();
+            }
+            break;
+          case 'Escape':
+            notesOverlay.classList.remove('visible');
+            notesVisible = false;
+            break;
+        }
+      });
+
+      // Touch / swipe
+      let touchStartX = 0;
+      let touchStartY = 0;
+      document.addEventListener('touchstart', function(e) {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+      });
+      document.addEventListener('touchend', function(e) {
+        const dx = e.changedTouches[0].clientX - touchStartX;
+        const dy = e.changedTouches[0].clientY - touchStartY;
+        if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+          dx > 0 ? prev() : next();
+        }
+      });
+
+      // Click (right half = next, left half = prev)
+      document.addEventListener('click', function(e) {
+        if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON') return;
+        if (e.clientX > window.innerWidth / 2) {
+          next();
+        } else {
+          prev();
+        }
+      });
+
+      // Init
+      goTo(current);
+      
+      // Show hint briefly
+      setTimeout(function() { hint.classList.add('visible'); }, 1000);
+      setTimeout(function() { hint.classList.remove('visible'); }, 5000);
+
+      
+    })();
+  
+  </script>
+</body>
+</html>
