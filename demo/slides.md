@@ -28,7 +28,7 @@ Markdown → Beautiful Slides
 
 ```bash
 # Install globally
-npm install -g @dprrwt/slides
+npm install -g md-slides
 
 # Create a new presentation
 slides init my-talk
@@ -176,9 +176,10 @@ Or just email the HTML file. It's self-contained.
 # Ship It 🚀
 
 ```bash
-npm install -g @dprrwt/slides
+npm install -g md-slides
 ```
 
+**npm:** [md-slides](https://www.npmjs.com/package/md-slides)
 **GitHub:** [dprrwt/md-slides](https://github.com/dprrwt/md-slides)
 
 **Author:** [dprrwt.me](https://dprrwt.me)
