@@ -426,7 +426,7 @@ export const baseStyles = `
   .slide.active h1,
   .slide.active h2,
   .slide.active h3 {
-    animation: fadeInUp 0.6s ease forwards;
+    animation: fadeInUp 0.6s ease both;
   }
 
   .slide.active p,
@@ -435,8 +435,7 @@ export const baseStyles = `
   .slide.active pre,
   .slide.active blockquote,
   .slide.active table {
-    animation: fadeInUp 0.6s ease 0.15s forwards;
-    opacity: 0;
+    animation: fadeInUp 0.6s ease 0.15s both;
   }
 `;
 

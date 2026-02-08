@@ -28,9 +28,25 @@ function getScript(slideCount, liveReload = false) {
 
       function goTo(n) {
         if (n < 0 || n >= total) return;
-        slides[current].classList.remove('active');
-        slides[current].classList.add(n > current ? 'prev' : '');
+        var goingForward = n > current;
+        
+        // Remove active from old slide
+        slides[current].classList.remove('active', 'prev');
+        if (goingForward) {
+          slides[current].classList.add('prev');
+        }
+        
         current = n;
+        
+        // For backward nav, ensure slide starts from left position
+        if (!goingForward) {
+          slides[current].classList.add('prev');
+        }
+        
+        // Force reflow to re-trigger CSS animations
+        void slides[current].offsetWidth;
+        
+        // Activate new slide
         slides[current].classList.remove('prev');
         slides[current].classList.add('active');
         
@@ -166,7 +182,7 @@ export function renderHTML(slidesData, options = {}) {
     if (slide.directives.class) {
       classes.push(slide.directives.class);
     }
-    if (i === 0) classes.push('active');
+    // active class is set by JS goTo() on init — not in HTML
 
     let style = '';
     if (slide.directives.background) {
