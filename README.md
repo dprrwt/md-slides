@@ -1,4 +1,7 @@
-# @dprrwt/slides
+# md-slides
+
+[![npm version](https://img.shields.io/npm/v/md-slides.svg)](https://www.npmjs.com/package/md-slides)
+[![license](https://img.shields.io/npm/l/md-slides.svg)](https://github.com/dprrwt/md-slides/blob/master/LICENSE)
 
 > Convert Markdown to beautiful presentation slides. Zero config, developer-friendly.
 
@@ -20,13 +23,13 @@ Write your presentation in **Markdown**, present it in the **browser**, deploy i
 ## 📦 Install
 
 ```bash
-npm install -g @dprrwt/slides
+npm install -g md-slides
 ```
 
 Or use directly:
 
 ```bash
-npx @dprrwt/slides init my-talk
+npx md-slides init my-talk
 ```
 
 ## 🚀 Quick Start
