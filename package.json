@@ -1,5 +1,5 @@
 {
-  "name": "@dprrwt/slides",
+  "name": "md-slides",
   "version": "1.0.0",
   "description": "Convert Markdown to beautiful presentation slides. Zero config, developer-friendly.",
   "type": "module",
