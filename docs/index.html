@@ -358,7 +358,7 @@
   .slide.active h1,
   .slide.active h2,
   .slide.active h3 {
-    animation: fadeInUp 0.6s ease forwards;
+    animation: fadeInUp 0.6s ease both;
   }
 
   .slide.active p,
@@ -367,15 +367,14 @@
   .slide.active pre,
   .slide.active blockquote,
   .slide.active table {
-    animation: fadeInUp 0.6s ease 0.15s forwards;
-    opacity: 0;
+    animation: fadeInUp 0.6s ease 0.15s both;
   }
 
   </style>
 </head>
 <body>
   <div class="deck">
-    <section class="slide layout-title active">
+    <section class="slide layout-title">
       <div class="slide-content">
         <h1>md-slides ✨</h1>
 <p>Markdown → Beautiful Slides</p>
@@ -612,9 +611,25 @@ git push origin gh-pages
 
       function goTo(n) {
         if (n < 0 || n >= total) return;
-        slides[current].classList.remove('active');
-        slides[current].classList.add(n > current ? 'prev' : '');
+        var goingForward = n > current;
+        
+        // Remove active from old slide
+        slides[current].classList.remove('active', 'prev');
+        if (goingForward) {
+          slides[current].classList.add('prev');
+        }
+        
         current = n;
+        
+        // For backward nav, ensure slide starts from left position
+        if (!goingForward) {
+          slides[current].classList.add('prev');
+        }
+        
+        // Force reflow to re-trigger CSS animations
+        void slides[current].offsetWidth;
+        
+        // Activate new slide
         slides[current].classList.remove('prev');
         slides[current].classList.add('active');
         
