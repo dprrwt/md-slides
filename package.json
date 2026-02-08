@@ -1,6 +1,6 @@
 {
   "name": "md-slides",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Convert Markdown to beautiful presentation slides. Zero config, developer-friendly.",
   "type": "module",
   "main": "src/index.js",
